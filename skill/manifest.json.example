@@ -1,0 +1,29 @@
+{
+  "_comment": "This is an example. Generate your real manifest with: python ~/.claude/skills/kage/scripts/clickup.py build-manifest > ~/.claude/skills/kage/manifest.json",
+  "_comment_2": "manifest.json is gitignored — it's per-user and contains your specific Space/List IDs.",
+  "team_id": "<your_team_id>",
+  "spaces": {
+    "Personal": {
+      "space_id": "<space_id>",
+      "lists": {
+        "Health": "<list_id>",
+        "Finance": "<list_id>",
+        "People": "<list_id>"
+      }
+    },
+    "Work": {
+      "space_id": "<space_id>",
+      "lists": {
+        "ADMIN": "<list_id>",
+        "FULFILLMENT": "<list_id>",
+        "MARKETING": "<list_id>"
+      }
+    },
+    "Inbox": {
+      "space_id": "<space_id>",
+      "lists": {
+        "Quick Capture": "<list_id>"
+      }
+    }
+  }
+}
