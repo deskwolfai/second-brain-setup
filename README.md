@@ -21,7 +21,8 @@ KAGE is **agnostic** — no company, framework, or industry baked in. Bring your
 ## Install (the easy way — 60 seconds)
 
 Prerequisites:
-- [Claude Code CLI](https://docs.claude.com/en/docs/claude-code/overview) installed (`claude` available in your shell).
+- [Claude Code CLI](https://docs.claude.com/en/docs/claude-code/overview) installed. (Doesn't need to be on your shell's PATH — Claude itself runs the install commands, it just needs the `~/.claude/skills/` directory the installer creates.)
+- **Python 3.9+** — Mac/Linux usually have it; Windows users should install from https://www.python.org/downloads/ and check **"Add python.exe to PATH"** during install. Don't trust the Microsoft Store version of `python` — Windows ships a stub that opens the Store instead of running anything. Use `py -3` on Windows; it always finds a real Python.
 - A ClickUp account with a personal API token.
 - (Optional) An [Obsidian](https://obsidian.md) vault — KAGE works without one, the ClickUp half stands alone.
 

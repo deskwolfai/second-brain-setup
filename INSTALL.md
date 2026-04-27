@@ -6,11 +6,38 @@ If you'd rather do it by hand, here it is.
 
 ## Prerequisites
 
-1. **Claude Code CLI** — `claude --version` should print a version. Install from https://docs.claude.com/en/docs/claude-code/overview if missing.
-2. **Python 3.9+** — `python --version`. The helper scripts use stdlib + `requests`. Install `requests` if needed: `pip install requests`.
+1. **Claude Code CLI** — install from https://docs.claude.com/en/docs/claude-code/overview if missing. (You don't need `claude` to be on your shell's PATH — the skill only needs the `~/.claude/skills/` directory the installer creates.)
+2. **Python 3.9+** — see the Python notes below; Windows users in particular should read these before starting.
 3. **Git** — to clone this repo. (Skip if you've downloaded the zip.)
 4. **A ClickUp account** with API access. Free Forever and up.
 5. **(Optional) An Obsidian vault.** Skip if you don't use Obsidian — the ClickUp half works standalone.
+
+### Python notes (read this if you're on Windows)
+
+Windows ships a "Microsoft Store stub" for `python` — a placeholder that opens the Store instead of running an interpreter. Symptoms: `python --version` exits silently, or you see "Python was not found; run without arguments to install from the Microsoft Store."
+
+**Two ways to fix:**
+
+**A) Install real Python from python.org (recommended)**
+
+1. Download Python 3.12 (or any 3.9+) from https://www.python.org/downloads/.
+2. **CRITICAL: during install, check the "Add python.exe to PATH" checkbox** at the bottom of the first installer screen. This is the most-missed step.
+3. Disable the Store stubs: Settings → Apps → "App execution aliases" → toggle off both `python.exe` and `python3.exe`.
+4. Open a fresh terminal (PATH only refreshes on new shells).
+
+After install, on Windows you'll have **`py -3`** as the universal Python launcher — it always finds a real Python regardless of PATH order. Use `py -3` instead of `python` everywhere on Windows. Mac/Linux users use `python3`.
+
+**B) Detect what works and use that**
+
+Try each in this order — use the first that prints a real version:
+
+```bash
+py -3 --version          # Windows Python Launcher (preferred on Windows)
+python3 --version        # macOS / Linux preferred
+python --version         # Fallback (may be the Store stub on Windows)
+```
+
+In every command below, replace `python` with whichever one worked for you. If none did, install Python first (Option A above).
 
 ## Step 1 — Clone
 

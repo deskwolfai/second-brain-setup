@@ -23,15 +23,37 @@ If the user says "set me up", "bootstrap KAGE", "install KAGE", "I just cloned t
 
 The kage repo is the folder containing this `CLAUDE.md`. The **workspace root** is its parent — that's where you'll scaffold the workspace-level `CLAUDE.md` in step 6. Confirm with the user that this is where they want KAGE rooted; if they cloned somewhere unusual, ask before assuming.
 
-### Step 2 — Verify Claude Code is the active CLI
+### Step 2 — Verify Claude Code's skills directory + detect Python
 
-The user is reading you, so `claude` is installed. Quick sanity:
+**Don't run `claude --version`.** You're already running — Claude Code is installed. The CLI may not be on the non-interactive shell's PATH (especially on Windows / PowerShell), but that's irrelevant: what the skill actually needs is the discovery directory at `~/.claude/skills/`.
 
 ```bash
-claude --version   # confirms Claude Code CLI is on PATH
+# Confirm the skills directory exists. If not, mkdir it.
+test -d ~/.claude/skills && echo "ok" || mkdir -p ~/.claude/skills
 ```
 
-If they're missing it, point them at https://docs.claude.com/en/docs/claude-code/overview before continuing — the skill needs the CLI's `~/.claude/skills/` discovery path.
+**Now detect a working Python.** This is the step that bites Windows users hardest. On Windows, `python` often resolves to the Microsoft Store stub (a placeholder that opens the Store instead of running a real interpreter). The Python Launcher `py -3` always finds a real Python if one is installed.
+
+Detection order — try each and use the first that works:
+
+```bash
+# Try in this order, pick the first that prints a real version (3.9+):
+py -3 --version          # Windows Python Launcher — preferred on Windows
+python3 --version        # macOS / Linux preferred
+python --version         # Fallback; on Windows may be the Store stub
+```
+
+The Store stub's tell: `python --version` may print nothing, exit silently, or trigger a Store popup. If you see "Python was not found; run without arguments to install from the Microsoft Store" — that's the stub.
+
+**If none of the three work**, the user needs a real Python. Walk them through:
+
+1. Open https://www.python.org/downloads/ in their browser.
+2. Download Python 3.12 (or whatever's current — anything 3.9+ is fine).
+3. **CRITICAL: during install, check the "Add python.exe to PATH" checkbox at the bottom of the first installer screen.** This is the most-missed step.
+4. Also recommend the user disable the Microsoft Store stub: Settings → Apps → "App execution aliases" → toggle off both `python.exe` and `python3.exe`.
+5. Re-open their terminal (PATH refreshes only on new shells) and re-run detection.
+
+Once you've identified the working Python command, **remember it for every subsequent step.** Refer to it below as `<PY>`. On Windows it'll usually be `py -3`; on Mac/Linux it'll usually be `python3`.
 
 ### Step 3 — Install the skill
 
@@ -63,17 +85,19 @@ After filling in, also `cp .env ~/.claude/skills/kage/.env` so the installed ski
 ### Step 5 — Verify ClickUp auth
 
 ```bash
-python ~/.claude/skills/kage/scripts/clickup.py whoami
+<PY> ~/.claude/skills/kage/scripts/clickup.py whoami
 ```
 
-Expect a JSON blob with the user's ClickUp profile. If it 401s, the token is wrong or has a smuggled `Bearer ` prefix — fix and retry. If it 403s on a Team, they're missing the team_id or it's wrong.
+(Where `<PY>` is the working Python command you detected in Step 2 — e.g. `py -3` on Windows, `python3` on Mac/Linux.)
+
+Expect a JSON blob with the user's ClickUp profile. If it 401s, the token is wrong or has a smuggled `Bearer ` prefix — fix and retry. If it 403s on a Team, they're missing the team_id or it's wrong. If it errors with `ModuleNotFoundError: No module named 'requests'`, run `<PY> -m pip install requests` and retry.
 
 ### Step 6 — Generate the ClickUp manifest
 
 KAGE needs a map of the user's ClickUp Spaces and Lists to route tasks correctly. Run the manifest generator:
 
 ```bash
-python ~/.claude/skills/kage/scripts/clickup.py build-manifest > ~/.claude/skills/kage/manifest.json
+<PY> ~/.claude/skills/kage/scripts/clickup.py build-manifest > ~/.claude/skills/kage/manifest.json
 ```
 
 (If `build-manifest` doesn't exist as a CLI command yet, walk the user through ClickUp's Spaces+Lists API manually — see `docs/clickup-setup.md` for the structure. The shape is `{team_id, spaces: {<space_name>: {space_id, lists: {<list_name>: <list_id>}}}}`.)
@@ -96,7 +120,7 @@ The workspace-level CLAUDE.md is what makes every future Claude session in the w
 Run the bounty board to prove end-to-end ClickUp access:
 
 ```bash
-python ~/.claude/skills/kage/scripts/clickup.py musts
+<PY> ~/.claude/skills/kage/scripts/clickup.py musts
 ```
 
 Expect a flat table of every Urgent task across all their Spaces. If empty, that's fine — confirms auth and manifest are good, they just don't have any open Musts yet.
@@ -104,7 +128,7 @@ Expect a flat table of every Urgent task across all their Spaces. If empty, that
 If they set up Obsidian:
 
 ```bash
-python ~/.claude/skills/kage/scripts/obsidian.py whoami
+<PY> ~/.claude/skills/kage/scripts/obsidian.py whoami
 ```
 
 Expect vault path + a count of notes.
@@ -121,6 +145,10 @@ Offer to demo one workflow — the bounty board, a journal entry, or ingesting a
 
 ## Edge cases
 
+- **`claude` not found on PATH** → ignore. You're already running, so it's installed. The bootstrap doesn't need the CLI on PATH; it only needs `~/.claude/skills/` (which exists or can be created with `mkdir -p`).
+- **`python` opens the Microsoft Store instead of running** → that's the Windows Store stub. Use `py -3` instead. If `py` also fails, real Python isn't installed — see Step 2 for the install walkthrough.
+- **`python3` works but `python` doesn't (or vice versa)** → fine, just use whichever works. Remember it as `<PY>` for every subsequent command.
+- **`ModuleNotFoundError: No module named 'requests'`** → run `<PY> -m pip install requests` and retry. Don't use `pip install` directly — it might install into a different Python than the one you detected.
 - **Skill folder already exists at `~/.claude/skills/kage/`** → ask before overwriting; surface what's there. They may have local edits worth preserving.
 - **`.env` already populated** → don't clobber; show what's there and ask if anything needs updating.
 - **Workspace `CLAUDE.md` already mentions KAGE** → assume bootstrap was partially run before. Surface what's done vs missing, finish only the missing parts.
