@@ -1,34 +1,6 @@
-# KAGE — never commit these
-
-# Credentials
-.env
-.env.local
-.env.*.local
-
-# Per-user manifest (Spaces and List IDs are workspace-specific)
-skill/manifest.json
-manifest.json
-
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-*.egg-info/
-.venv/
-venv/
-env/
-
-# IDE / OS
-.vscode/
-.idea/
-*.swp
-*.swo
 .DS_Store
 Thumbs.db
-
-# Wave queue (lives inside user's Obsidian vault, but in case anyone runs scripts from this repo)
-.bunshin/
-
-# Logs
-*.log
+# Obsidian per-device state (the shipped settings files are kept)
+skill/templates/vault/.obsidian/workspace*.json
+skill/templates/vault/.obsidian/plugins/
+.env

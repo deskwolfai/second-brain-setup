@@ -1,96 +1,84 @@
-# KAGE — a Claude-driven second brain
+# Second Brain Setup
 
-KAGE is a self-contained operator for two things every knowledge worker needs: **active work** (tasks, projects, milestones) and **durable knowledge** (people, decisions, references, the stuff that compounds over time).
+A personal 2nd brain in [Obsidian](https://obsidian.md), set up and run by [Claude Code](https://docs.claude.com/en/docs/claude-code/overview).
 
-It's two backends bridged by one Claude Code skill:
+You get a ready-made vault organized around five areas of life (**Happiness, Health, Love, Wealth, Wisdom**), plus an Inbox, a Journal, your personal rules (DOCTRINES), Life Operations, and an Archive. Every folder has a short guide (`executive.md`), so Claude can find its way around without reading everything. A `CLAUDE.md` at the top teaches every future Claude session how to work with you.
 
-- **GAMBATTE** — your tasks live in **ClickUp**. Real PM features, mobile, team visibility, ClickUp Brain.
-- **BUNSHIN** — your knowledge lives in an **Obsidian vault**. Filesystem-speed, Claude-native markdown, offline, graph view, wikilinks.
+Your notes are plain markdown files on your own computer. The vault needs no extra accounts, API keys, or plugins.
 
-The skill (`skill/`) routes every request to the right side, owns a wiki-style maintenance pattern for Obsidian (Karpathy's LLM-wiki methodology), and batches ClickUp writes into "waves" so collaborators don't see half-done state.
+## Set it up (about 5 minutes)
 
-KAGE is **agnostic** — no company, framework, or industry baked in. Bring your own ClickUp workspace, your own (optional) Obsidian vault, and KAGE handles the orchestration.
+You need:
 
-## Why use it
+- A Claude subscription with [Claude Code](https://docs.claude.com/en/docs/claude-code/overview) installed
+- [git](https://git-scm.com/downloads)
+- [Obsidian](https://obsidian.md) (free)
 
-- **One mental model, two backends.** Stop deciding where to put a thought — KAGE routes it.
-- **Knowledge compounds.** Every source you ingest updates the wiki. Old notes stay current because Claude does the bookkeeping.
-- **Tasks ship.** Bulk captures go through "waves" so 20 brain-dumped items hit ClickUp as one coherent batch, not 20 half-formed updates your teammates have to wade through.
-- **Cold-start speed.** A fresh Claude session reads the skill once and operates the whole second brain in 1–2 turns.
+To open a terminal: on Windows, right-click the Start button and choose **Terminal**. On a Mac, open the **Terminal** app. Then paste:
 
-## Install (the easy way — 60 seconds)
+```bash
+git clone https://github.com/deskwolfai/second-brain-setup.git
+cd second-brain-setup
+claude
+```
 
-Prerequisites:
-- [Claude Code CLI](https://docs.claude.com/en/docs/claude-code/overview) installed. (Doesn't need to be on your shell's PATH — Claude itself runs the install commands, it just needs the `~/.claude/skills/` directory the installer creates.)
-- **Python 3.9+** — Mac/Linux usually have it; Windows users should install from https://www.python.org/downloads/ and check **"Add python.exe to PATH"** during install. Don't trust the Microsoft Store version of `python` — Windows ships a stub that opens the Store instead of running anything. Use `py -3` on Windows; it always finds a real Python.
-- A ClickUp account with a personal API token.
-- (Optional) An [Obsidian](https://obsidian.md) vault — KAGE works without one, the ClickUp half stands alone.
+Then tell Claude: **"set me up"**.
 
-Steps:
-1. Clone this repo into your workspace folder (e.g. `~/Projects/`, `~/Documents/repos/`, wherever you keep code):
-   ```bash
-   git clone <this-repo-url> kage
-   cd kage
-   ```
-2. Run `claude` from inside the `kage/` folder.
-3. Tell Claude: **"set me up"** (or "bootstrap KAGE", "install KAGE").
-4. Claude reads `CLAUDE.md` in this folder and walks you through:
-   - Installing the skill into `~/.claude/skills/kage/`
-   - Setting up `.env` with your ClickUp token (and optional Obsidian vault path)
-   - Building a `manifest.json` for your ClickUp Spaces and Lists
-   - Verifying ClickUp auth with a `whoami` smoke test
-   - **Scaffolding a workspace-level `CLAUDE.md` one folder up** (so every future Claude session in your workspace inherits the operating doctrine)
-   - A bounty-board smoke test to prove end-to-end ClickUp access
+Claude will:
 
-That's it. From any future session in your workspace, just say what you want — "add a task to call the dentist", "log a decision about Q3 roadmap", "what's on my plate this week" — and the skill auto-fires.
+1. Install the `second-brain` skill into `~/.claude/skills/`.
+2. Ask your name, where you want the vault, and whether to keep the five pillars as they are.
+3. Build the vault and fill in your `CLAUDE.md`.
+4. Walk you through opening it in Obsidian.
 
-## Install (manual, if you'd rather not delegate to Claude)
+When it's done, you can delete this repo folder. The skill and your vault stay.
 
-See [INSTALL.md](INSTALL.md) for step-by-step copy-paste instructions.
+## Use it
 
-## What's in this repo
+Open a terminal in your vault folder, type `claude`, and just talk. To open a terminal in a folder:
 
-- `README.md` — this file.
-- `CLAUDE.md` — instructions Claude reads when you run `claude` inside this folder. Handles bootstrap.
-- `INSTALL.md` — detailed manual install reference.
-- `.env.example` — credentials template. Copy to `.env` after install.
-- `.gitignore` — keeps `.env` and Python bytecode out of git.
-- `skill/` — the Claude Code skill itself. Drops into `~/.claude/skills/kage/` during bootstrap.
-  - `SKILL.md` — operating manual. The brain of the system.
-  - `manifest.json` — your ClickUp Space + List ID map. Generated during bootstrap.
-  - `scripts/` — Python helpers for Obsidian, ClickUp, and the wave-batched writer.
-  - `references/` — doctrine docs Claude reads on demand (Karpathy wiki pattern, wave semantics, conventions, vault layout, ClickUp API quirks).
-  - `templates/workspace-CLAUDE.md` — the doctrine Claude scaffolds at your workspace root during bootstrap.
-- `docs/` — agnostic reference material humans can read directly.
-  - `wat-framework.md` — the WAT (Workflows / Agents / Tools) framework that underpins how KAGE operates.
-  - `philosophies.md` — the three operating philosophies + the $80K rule.
-  - `obsidian-setup.md` — how to set up an Obsidian vault for BUNSHIN.
-  - `clickup-setup.md` — how to set up a ClickUp workspace for GAMBATTE.
+- **Windows:** right-click the folder and choose **Open in Terminal**.
+- **Mac:** right-click the folder and choose **Services → New Terminal at Folder**.
 
-## Philosophy summary
+Some things to say:
 
-KAGE is built on four ideas. Read [docs/philosophies.md](docs/philosophies.md) for depth.
+- "journal: rough day, but the gym session was great"
+- "capture: business idea, a dog-walking app for apartments"
+- "add my cousin Maria to my rolodex, birthday is June 3"
+- "I've decided: no phone for the first hour of the day. Make that a doctrine."
+- "let's do a weekly review and clean out my inbox"
+- "import my old notes from ~/Documents/Notes"
 
-1. **WAT framework** — Workflows (instructions), Agents (Claude), Tools (deterministic scripts). Probabilistic AI handles reasoning; code handles execution.
-2. **Bottom up for understanding, top down for speed.** Never automate what you don't understand. The Karpathy wiki pattern is this philosophy in action.
-3. **The flywheel.** Every output is the next system's input. Manual gaps in the loop are flag-able opportunities, not features.
-4. **Clean separation, zero entanglement.** BUNSHIN owns reads, GAMBATTE owns writes — bridged by URLs, never schema. Don't dual-write.
+## What's inside
 
-## Compatibility
+```
+skill/
+├── SKILL.md                 the operating manual Claude follows
+├── references/              layout, guide format, conventions, Obsidian setup
+└── templates/vault/         the starter vault, copied during setup
+    ├── CLAUDE.md            Claude's entry file for your vault
+    ├── executive.md         vault overview (every folder has one)
+    ├── 00 Inbox/  Journal/  DOCTRINES/  Life Operations/  99 Archive/  _Templates/
+    └── Happiness/  Health/  Love/  Wealth/  Wisdom/
+```
 
-- **Operating systems:** Windows 10+, macOS 12+, Linux (any modern distro).
-- **Python:** 3.9+ (the helper scripts are stdlib + `requests` — minimal deps).
-- **Claude Code:** any recent version. Skills auto-discovered from `~/.claude/skills/`.
-- **ClickUp:** any plan with API access (Free Forever and up).
-- **Obsidian:** any version. Optional — ClickUp half works without it.
+## Make it yours
+
+Rename, drop, or add folders whenever you want. Just ask Claude, and it will keep the guides and links in sync. Put your preferences in the **Personal notes for Claude** section at the bottom of your vault's `CLAUDE.md`.
+
+## Keep it private
+
+Your vault is personal. Back it up (Obsidian Sync, a cloud folder, or a **private** git repo), but never push it to a public repo. Don't store passwords or account numbers in it; write "in my password manager" instead.
+
+## Manual install
+
+If you'd rather not have Claude do the setup:
+
+1. Copy `skill/` to `~/.claude/skills/second-brain/`.
+2. Copy `skill/templates/vault/` to wherever you want your vault, and rename the folder.
+3. In every `.md` file, replace `{{OWNER}}` with your name and `{{DATE}}` with today's date. Leave the `{{date:...}}` and `{{title}}` tokens in `_Templates/` alone; Obsidian fills those in.
+4. Open the folder in Obsidian, and turn on the **Daily notes** and **Templates** core plugins.
 
 ## License
 
-[Your choice — MIT, Apache-2.0, etc. Add a LICENSE file before publishing.]
-
-## Credits
-
-KAGE's architecture borrows from:
-- **Andrej Karpathy's LLM-wiki methodology** ([karpathy-llm-wiki.md](skill/references/karpathy-llm-wiki.md)) — the maintenance pattern BUNSHIN runs on.
-- **CQRS** (Command Query Responsibility Segregation) — the read/write split between BUNSHIN and GAMBATTE.
-- **The WAT framework** — Workflows / Agents / Tools, originally articulated for AI-driven engineering systems.
+MIT. See [LICENSE](LICENSE).
